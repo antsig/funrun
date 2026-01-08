@@ -61,6 +61,6 @@ class CreateAdminsTable extends Migration
 
     public function down()
     {
-        $this->forge->dropTable('admins');
+        $this->forge->dropTable('admins', true);
     }
 }

@@ -11,6 +11,7 @@ class CreateEvents extends Migration
         $this->forge->addField([
             'id' => ['type' => 'INT', 'auto_increment' => true],
             'name' => ['type' => 'VARCHAR', 'constraint' => 100],
+            'slug' => ['type' => 'VARCHAR', 'constraint' => 100, 'unique' => true],
             'description' => ['type' => 'TEXT'],
             'event_date' => ['type' => 'DATE'],
             'location' => ['type' => 'VARCHAR', 'constraint' => 100],
@@ -23,6 +24,6 @@ class CreateEvents extends Migration
 
     public function down()
     {
-        //
+        $this->forge->dropTable('events', true);
     }
 }

@@ -1,0 +1,248 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap");
+
+:root {
+  --primary: #ffd700; /* Gold/Yellow */
+  --secondary: #483d8b; /* Dark Slate Blue / Purple */
+  --secondary-dark: #372e6b;
+  --dark: #1a1a1a;
+  --light: #f4f4f9;
+  --white: #ffffff;
+  --text-dark: #333;
+  --text-light: #fff;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light);
+  color: var(--text-dark);
+}
+
+/* Header */
+header {
+  background-color: var(--secondary);
+  color: var(--white);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 900;
+  font-style: italic; /* Dynamic sport feel */
+  color: var(--primary);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  color: #ccc;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary);
+}
+
+/* Hero Section (Slanted) */
+.hero {
+  position: relative;
+  background: var(--primary); /* Fallback */
+  background: linear-gradient(
+      105deg,
+      var(--primary) 0%,
+      var(--primary) 55%,
+      transparent 55%
+    ),
+    linear-gradient(to right, #483d8b 50%, #483d8b 100%); /* Purple background behind slanted part usually achieved with image or complex gradients. Simplified here for CSS only */
+  /* Revamped for the "Reference Image" look: 
+     Left side Yellow, Right side Image/Purple. 
+     Using a simpler dual-color gradient for now as a base. */
+  background: linear-gradient(110deg, var(--primary) 50%, var(--secondary) 50%);
+  color: var(--secondary);
+  padding: 100px 0;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.hero-content {
+  width: 45%;
+  color: var(--secondary); /* Dark text on yellow background */
+}
+
+/* Special styling for the Hero text to match reference */
+.hero h1 {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+  font-style: italic;
+  color: var(--secondary);
+}
+
+.hero p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: var(--dark);
+}
+
+.hero-image {
+  width: 50%;
+  text-align: right;
+  /* Placeholder for the runner image */
+  background-image: url("https://placehold.co/600x400/483D8B/FFF?text=Runner+Image");
+  background-size: cover;
+  background-position: center;
+  height: 300px; /* Adjust as needed */
+  border-radius: 10px;
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  display: none; /* Hide if no real image provided yet, or enable if wanted */
+}
+
+/* Card Updates */
+.card {
+  background: var(--white);
+  border-radius: 0; /* Boxy sport look */
+  padding: 25px;
+  margin-bottom: 25px;
+  border: 1px solid #eee;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.1); /* Hard shadow for sport feel */
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 13px 13px 0px rgba(72, 61, 139, 0.2); /* Purple shadow hover */
+}
+
+.card h2,
+.card h3 {
+  color: var(--secondary);
+  text-transform: uppercase;
+  font-weight: 800;
+  font-style: italic;
+  margin-top: 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: var(--secondary);
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  font-style: italic;
+  transition: all 0.3s;
+  border-radius: 4px; /* Slight rounded */
+}
+
+.btn:hover {
+  background-color: var(--secondary-dark);
+  transform: skewX(-10deg); /* Sporty skew on hover */
+}
+
+.btn-primary {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+.btn-qty {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--secondary);
+  background: white;
+  color: var(--secondary);
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-qty:disabled {
+  border-color: #ccc;
+  color: #ccc;
+}
+.btn-qty:hover:not(:disabled) {
+  background: var(--secondary);
+  color: white;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--secondary);
+  color: var(--white);
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 50px;
+}
+
+/* Utils */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+.text-center {
+  text-align: center;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+/* Form Elements */
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  background: #f9f9f9;
+  font-family: inherit;
+  margin-bottom: 15px;
+}
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--secondary);
+}

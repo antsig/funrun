@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap");
+
+:root {
+  --primary: #ffd700;
+  --primary-dark: #daa520;
+  --bg-color: #f4f6f9; /* AdminLTE default bg match */
+}
+
+/* Override Fonts */
+body {
+  font-family: "Outfit", sans-serif !important;
+}
+
+/* Brand Logo Adjustment */
+.brand-link {
+  background-color: #000 !important;
+  color: var(--primary) !important;
+}
+
+/* Sidebar Overrides to prevent horizontal scroll */
+.sidebar {
+  overflow-x: hidden !important;
+}
+
+/* Button Overrides */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #000;
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #000;
+}
+
+/* Custom Badges */
+.badge-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.badge-paid {
+  background-color: #d4edda;
+  color: #155724;
+}
+.badge-expired {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Utilities */
+.card-header {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Ensure full width content */
+.content-wrapper > .content {
+  padding: 20px;
+}

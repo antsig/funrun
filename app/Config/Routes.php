@@ -63,5 +63,14 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
         $routes->post('orders/updateStatus/(:num)', 'Orders::updateStatus/$1');
         $routes->get('orders/approvePayment/(:num)', 'Orders::approvePayment/$1');
         $routes->get('orders/rejectPayment/(:num)', 'Orders::rejectPayment/$1');
+
+        // Race Kit Collection
+        $routes->group('racekit', function ($routes) {
+            $routes->get('/', 'RaceKit::index');
+            $routes->get('search', 'RaceKit::search');
+            $routes->get('detail/(:segment)', 'RaceKit::detail/$1');
+            $routes->match(['get', 'post'], 'mark/(:num)', 'RaceKit::markCollected/$1');
+            $routes->get('mark-all/(:num)', 'RaceKit::markAllCollected/$1');
+        });
     });
 });

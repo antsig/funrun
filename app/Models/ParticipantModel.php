@@ -12,7 +12,7 @@ class ParticipantModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    protected $allowedFields = ['order_id', 'name', 'gender', 'dob', 'category_id', 'jersey_size', 'jersey_status', 'bib_number'];
+    protected $allowedFields = ['order_id', 'name', 'gender', 'dob', 'category_id', 'jersey_size', 'jersey_status', 'bib_number', 'is_collected', 'collected_at', 'collected_by', 'taker_name', 'taker_phone'];
     // Dates
     protected $useTimestamps = true;
     protected $dateFormat = 'datetime';

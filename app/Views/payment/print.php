@@ -159,6 +159,12 @@
             </tbody>
         </table>
 
+        <div class="qrcode">
+            <!-- QR Code pointing to the order code (for scanning) -->
+             <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= esc($order['order_code']) ?>" alt="QR Code">
+             <p><small>Scan QR Code untuk Pengambilan Race Kit</small></p>
+        </div>
+
         <div class="footer">
             <p>Harap membawa bukti ini saat pengambilan Race Pack.</p>
             <p><strong>Fun Run Organizer</strong> - support@funrun.com</p>

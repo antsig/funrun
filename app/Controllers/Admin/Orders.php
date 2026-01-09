@@ -98,7 +98,11 @@ class Orders extends BaseController
         }
 
         // Update Order to Paid
-        $orderModel->update($orderId, ['payment_status' => 'paid']);
+        $updateData = [
+            'payment_status' => 'paid',
+            'confirmed_by' => session()->get('admin_id')  // Track admin
+        ];
+        $orderModel->update($orderId, $updateData);
 
         // Generate BIBs
         $participantModel = new ParticipantModel();

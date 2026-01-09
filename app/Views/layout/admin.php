@@ -64,6 +64,8 @@
 <!-- AdminLTE App -->
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
+<?= $this->renderSection('scripts') ?>
+
 <script>
     // Global SweetAlert Init for Flashdata (if not handled by alert div above)
     // Adding it here as a backup or for specific JS triggers

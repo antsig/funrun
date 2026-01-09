@@ -32,6 +32,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="/admin/racekit" class="nav-link <?= current_url() == base_url('/admin/racekit') ? 'active' : '' ?>">
+                        <i class="nav-icon fas fa-tshirt"></i>
+                        <p>Pengambilan Race Kit</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="/admin/logout" class="nav-link text-danger">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Logout</p>

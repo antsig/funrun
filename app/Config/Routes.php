@@ -22,8 +22,9 @@ $routes->post('/checkout/process', 'Checkout::process');
 
 // Payment
 $routes->get('/payment/print/(:segment)', 'Payment::print/$1');
+$routes->get('/payment/edit/(:segment)', 'Payment::edit/$1');
 $routes->get('/payment/(:segment)', 'Payment::index/$1');
-$routes->post('/payment/confirm/(:segment)', 'Payment::confirm/$1');
+$routes->post('/payment/manual-confirm/(:segment)', 'ManualPayment::upload/$1');
 
 // Admin Panel
 // Admin Panel
@@ -34,6 +35,10 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
     $routes->get('verify-otp', 'Auth::verifyOtp');
     $routes->post('process-otp', 'Auth::processOtp');
     $routes->get('logout', 'Auth::logout');
+    $routes->get('forgot-password', 'Auth::forgotPassword');
+    $routes->post('process-forgot', 'Auth::processForgot');
+    $routes->get('reset-password/(:segment)', 'Auth::resetPassword/$1');
+    $routes->post('process-reset', 'Auth::processReset');
 
     // Protected Routes
     $routes->group('', ['filter' => 'adminAuth'], function ($routes) {
@@ -50,10 +55,13 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
         $routes->post('events/update/(:num)', 'Events::update/$1');
         $routes->post('events/addCategory/(:num)', 'Events::addCategory/$1');
         $routes->get('events/deleteCategory/(:num)', 'Events::deleteCategory/$1');
+        $routes->get('events/tickets/(:num)', 'Events::tickets/$1');
 
         // Orders
         $routes->get('orders', 'Orders::index');
         $routes->get('orders/show/(:num)', 'Orders::show/$1');
         $routes->post('orders/updateStatus/(:num)', 'Orders::updateStatus/$1');
+        $routes->get('orders/approvePayment/(:num)', 'Orders::approvePayment/$1');
+        $routes->get('orders/rejectPayment/(:num)', 'Orders::rejectPayment/$1');
     });
 });

@@ -41,18 +41,21 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th style="width: 10px">#</th>
                         <th>Date</th>
                         <th>Order Code</th>
                         <th>Buyer</th>
                         <th>Amount</th>
-                        <th>Payment</th>
+                        <th>Payment Method</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $i = 1 + (10 * ($currentPage - 1)); ?>
                     <?php foreach ($orders as $order): ?>
                     <tr>
+                        <td><?= $i++ ?></td>
                         <td><?= date('d M Y H:i', strtotime($order['created_at'])) ?></td>
                         <td><?= esc($order['order_code']) ?></td>
                         <td>
@@ -60,7 +63,15 @@
                             <small class="text-muted"><?= esc($order['buyer_email']) ?></small>
                         </td>
                         <td>Rp <?= number_format($order['total_amount'], 0, ',', '.') ?></td>
-                        <td><?= esc($order['payment_gateway']) ?? '-' ?></td>
+                        <td>
+                                <?= esc($order['payment_method'] ?? '-') ?>
+                                <?php if (!empty($order['proof_file'])): ?>
+                                    <br>
+                                    <a href="/uploads/payments/<?= esc($order['proof_file']) ?>" target="_blank" class="text-info">
+                                        <i class="fas fa-image"></i> Lihat Bukti
+                                    </a>
+                                <?php endif; ?>
+                        </td>
                         <td>
                              <?php
     $badgeClass = 'badge-secondary';
@@ -79,10 +90,13 @@
                     </tr>
                     <?php endforeach; ?>
                     <?php if (empty($orders)): ?>
-                        <tr><td colspan="7" class="text-center">No orders found</td></tr>
+                        <tr><td colspan="8" class="text-center">No orders found</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer clearfix">
+            <?= $pager->links('default', 'default_full') ?>
         </div>
     </div>
 </div>

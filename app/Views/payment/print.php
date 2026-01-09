@@ -111,7 +111,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Fun Run 2024</h1>
+            <h1><?= esc($eventName) ?></h1>
             <p>Bukti Pengambilan Jersey & Paket Lomba</p>
         </div>
 
@@ -133,7 +133,7 @@
             </div>
             <div class="meta-group" style="text-align: right;">
                 <h3>Tanggal Order</h3>
-                <p><?= date('d F Y', strtotime($order['created_at'])) ?></p>
+                <p><?= date('d F Y H:i', strtotime($order['created_at'])) ?></p>
             </div>
         </div>
 

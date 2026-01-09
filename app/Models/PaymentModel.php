@@ -12,7 +12,7 @@ class PaymentModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    protected $allowedFields = ['order_id', 'gateway', 'gateway_ref', 'status', 'payload'];
+    protected $allowedFields = ['order_id', 'gateway', 'gateway_ref', 'proof_file', 'status', 'payload'];
     // Dates
     protected $useTimestamps = true;
     protected $dateFormat = 'datetime';

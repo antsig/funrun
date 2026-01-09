@@ -51,6 +51,10 @@ class Registration extends BaseController
         unset($cart[$index]);
         session()->set('cart', array_values($cart));
 
+        if ($this->request->getGet('redirect') === 'checkout') {
+            return redirect()->to('/checkout');
+        }
+
         return redirect()->back();
     }
 

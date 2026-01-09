@@ -1,4 +1,4 @@
-# FunRun Jakarta 2026
+# FunRun Gorontalo 2026
 
 Web application for managing the FunRun event. This system handles participant registration, payments (via Midtrans), and event management.
 

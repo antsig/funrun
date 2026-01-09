@@ -18,7 +18,7 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th style="width: 10px">#</th>
                     <th>Event Name</th>
                     <th>Date</th>
                     <th>Location</th>
@@ -26,13 +26,15 @@
                 </tr>
             </thead>
             <tbody>
+                <?php $i = 1 + (10 * ($currentPage - 1)); ?>
                 <?php foreach ($events as $event): ?>
                 <tr>
-                    <td><?= $event['id'] ?></td>
+                    <td><?= $i++ ?></td>
                     <td><?= esc($event['name']) ?></td>
                     <td><?= date('d M Y', strtotime($event['event_date'])) ?></td>
                     <td><?= esc($event['location']) ?></td>
                     <td>
+                        <a href="/admin/events/tickets/<?= $event['id'] ?>" class="btn btn-sm btn-info" title="Manage Tickets"><i class="fas fa-ticket-alt"></i></a>
                         <a href="/admin/events/edit/<?= $event['id'] ?>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
                         <a href="/admin/events/delete/<?= $event['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
                     </td>
@@ -43,6 +45,9 @@
                 <?php endif; ?>
             </tbody>
         </table>
+    </div>
+    <div class="card-footer clearfix">
+        <?= $pager->links('default', 'default_full') ?>
     </div>
 </div>
 

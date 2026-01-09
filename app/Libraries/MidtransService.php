@@ -42,4 +42,26 @@ class MidtransService
 
         return $response['token'] ?? null;
     }
+
+    public function getStatus($orderId)
+    {
+        $baseUrl = $this->isProduction
+            ? 'https://api.midtrans.com/v2'
+            : 'https://api.sandbox.midtrans.com/v2';
+
+        $url = "$baseUrl/$orderId/status";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Accept: application/json',
+            'Authorization: Basic ' . base64_encode($this->serverKey . ':')
+        ]);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($result, true);
+    }
 }

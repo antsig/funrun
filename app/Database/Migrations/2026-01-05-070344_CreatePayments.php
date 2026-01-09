@@ -13,6 +13,7 @@ class CreatePayments extends Migration
             'order_id' => ['type' => 'INT'],
             'gateway' => ['type' => 'VARCHAR', 'constraint' => 50],
             'gateway_ref' => ['type' => 'VARCHAR', 'constraint' => 100, 'null' => true],
+            'proof_file' => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
             'status' => ['type' => 'VARCHAR', 'constraint' => 20],
             'payload' => ['type' => 'TEXT', 'null' => true],
             'created_at' => ['type' => 'DATETIME', 'null' => true]

@@ -44,27 +44,95 @@
 
     <?php if ($order['payment_status'] == 'pending'): ?>
         
-        <?php if (!empty($order['snap_token'])): ?>
-            <button id="pay-button" style="background: #0063d1; color: white;">Bayar Sekarang (Midtrans)</button>
-        <?php endif; ?>
-
-        <div style="margin-top: 20px; font-weight: bold; text-align: center;">ATAU</div>
-
-        <p>Silakan transfer total pembayaran ke:</p>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #eee;">
-            <div style="font-weight: bold; margin-bottom: 5px;">Bank BCA</div>
-            <div style="font-size: 1.4em; letter-spacing: 2px; color: #1a1a1a; font-weight: bold;">123 456 7890</div>
-            <div style="font-size: 0.9em; color: #7f8c8d;">a.n. FunRun Organizer</div>
+        <!-- Tabs Nav -->
+        <div style="display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px;">
+            <div class="tab-nav active" onclick="switchTab('instant')" style="padding: 10px 20px; cursor: pointer; border-bottom: 2px solid #FFD700; font-weight: bold;">Instant Payment</div>
+            <div class="tab-nav" onclick="switchTab('manual')" style="padding: 10px 20px; cursor: pointer; color: #7f8c8d;">Manual Transfer</div>
         </div>
 
-        <form action="/payment/confirm/<?= esc($order['order_code']) ?>" method="post">
-            <div class="form-group">
-                <label for="ref_number">Manual Transfer (Jika tidak pakai Midtrans)</label>
-                <input type="text" id="ref_number" name="ref_number" placeholder="Contoh: TRANSFER-BUDI-123" required>
+        <!-- Tab Content: Instant -->
+        <div id="tab-instant" class="tab-content">
+            <p>Bayar otomatis dengan QRIS, Virtual Account, atau E-Wallet via Midtrans.</p>
+            <?php if (!empty($order['snap_token'])): ?>
+                <button id="pay-button" style="background: #0063d1; color: white;">Bayar Sekarang (Midtrans)</button>
+            <?php else: ?>
+                <div class="alert alert-danger">Token pembayaran tidak valid.</div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Tab Content: Manual -->
+        <div id="tab-manual" class="tab-content" style="display: none;">
+            
+            <?php if (!empty($order['proof_file'])): ?>
+                <div style="background: #e3f2fd; border: 2px solid #2196f3; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: center;">
+                    <i class="fas fa-check-circle" style="color: #2196f3; font-size: 2em; margin-bottom: 10px;"></i><br>
+                    <strong style="color: #0d47a1; font-size: 1.2em;">Bukti Pembayaran Telah Diupload</strong><br>
+                    <span style="font-size: 0.9em; color: #555;">Filename: <?= esc($order['proof_file']) ?></span><br>
+                    <small style="color: #666; display: block; margin-top: 5px;">Status: Menunggu verifikasi admin.</small>
+                    
+                    <div style="margin-top: 15px;">
+                        <?php if (strtolower(pathinfo($order['proof_file'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                             <a href="/uploads/payments/<?= esc($order['proof_file']) ?>" target="_blank" style="display:inline-block; padding: 10px 20px; background: #fff; border: 1px solid #2196f3; border-radius: 4px; text-decoration: none; color: #0d47a1; font-weight: bold;">
+                                <i class="fas fa-file-pdf" style="color: #d32f2f;"></i> Lihat Bukti Saya
+                             </a>
+                        <?php else: ?>
+                            <img src="/uploads/payments/<?= esc($order['proof_file']) ?>" alt="Bukti" style="max-height: 150px; border-radius: 4px; border: 1px solid #ddd; padding: 4px; background: white;">
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <p>Silakan transfer total pembayaran ke:</p>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #eee;">
+                <div style="font-weight: bold; margin-bottom: 5px;">Bank BCA</div>
+                <div style="font-size: 1.4em; letter-spacing: 2px; color: #1a1a1a; font-weight: bold;">123 456 7890</div>
+                <div style="font-size: 0.9em; color: #7f8c8d;">a.n. FunRun Organizer</div>
             </div>
-            <button type="submit">Konfirmasi Pembayaran Manual</button>
-        </form>
-    <?php else: ?>
+
+            <form action="/payment/manual-confirm/<?= esc($order['order_code']) ?>" method="post" enctype="multipart/form-data">
+                <?= csrf_field() ?>
+                <div class="form-group">
+                    <label for="ref_number">Nama Pengirim / Catatan</label>
+                    <input type="text" id="ref_number" name="ref_number" placeholder="Contoh: Budi Santoso" value="<?= isset($order['payment_ref']) ? esc($order['payment_ref']) : '' ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="proof_file"><?= !empty($order['proof_file']) ? 'Upload Ulang Bukti' : 'Upload Bukti Transfer' ?> (Max 5MB, PDF/Image)</label>
+                    <input type="file" id="proof_file" name="proof_file" accept="image/*,application/pdf" required style="padding: 10px; border: 1px solid #ddd; width: 100%; border-radius: 6px;">
+                </div>
+                <button type="submit">Kirim Bukti Pembayaran</button>
+            </form>
+        </div>
+
+        <script>
+            function switchTab(tab) {
+                // Hide all contents
+                document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+                // Show selected
+                document.getElementById('tab-' + tab).style.display = 'block';
+                
+                // Reset nav styles
+                document.querySelectorAll('.tab-nav').forEach(el => {
+                    el.style.borderBottom = 'none';
+                    el.style.color = '#7f8c8d';
+                });
+                // Active nav style
+                const activeNav = document.querySelector(`.tab-nav[onclick="switchTab('${tab}')"]`);
+                if (activeNav) {
+                    activeNav.style.borderBottom = '2px solid #FFD700';
+                    activeNav.style.color = '#1a1a1a';
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('activePaymentTab', tab);
+            }
+
+            // Restore tab on load
+            document.addEventListener('DOMContentLoaded', function() {
+                const savedTab = localStorage.getItem('activePaymentTab') || 'instant';
+                switchTab(savedTab);
+            });
+        </script>
+    <?php elseif ($order['payment_status'] == 'paid' || $order['payment_status'] == 'settlement'): ?>
         <div style="text-align: center; color: #27ae60; margin: 30px 0;">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             <p><strong>Pembayaran Berhasil</strong></p>
@@ -73,6 +141,13 @@
             <a href="/payment/print/<?= esc($order['order_code']) ?>" target="_blank" class="btn btn-primary" style="background: #333; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; display: inline-block;">
                 <i class="fas fa-print"></i> Cetak Bukti Pengambilan Jersey
             </a>
+        </div>
+    <?php else: ?>
+        <!-- Handle Expired/Failed if not redirected -->
+        <div class="alert alert-danger" style="margin-top: 20px;">
+            <h4>Status: <?= esc(strtoupper($order['payment_status'])) ?></h4>
+            <p>Maaf, pesanan Anda tidak dapat diproses (Kadaluarsa atau Dibatalkan).</p> 
+            <a href="/checkout" class="btn btn-primary" style="margin-top: 10px;">Buat Pesanan Baru</a>
         </div>
     <?php endif; ?>
 

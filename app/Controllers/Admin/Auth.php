@@ -83,4 +83,77 @@ class Auth extends BaseController
         session()->destroy();
         return redirect()->to('/admin/login');
     }
+
+    // Forgot Password Flow
+    public function forgotPassword()
+    {
+        return view('admin/auth/forgot_password');
+    }
+
+    public function processForgot()
+    {
+        $email = $this->request->getPost('email');
+        $adminModel = new AdminModel();
+        $admin = $adminModel->where('email', $email)->first();
+
+        if ($admin) {
+            $token = bin2hex(random_bytes(32));
+            $adminModel->update($admin['id'], [
+                'reset_token' => $token,
+                'reset_expiry' => date('Y-m-d H:i:s', strtotime('+1 hour'))
+            ]);
+
+            // Simulate Email
+            $resetLink = base_url('admin/reset-password/' . $token);
+            log_message('info', 'Reset Password Link for ' . $email . ': ' . $resetLink);
+            session()->setFlashdata('success', 'Reset link sent to your email (Check Logs for Dev: ' . $resetLink . ')');
+        } else {
+            session()->setFlashdata('error', 'Email not found');
+        }
+
+        return redirect()->back();
+    }
+
+    public function resetPassword($token)
+    {
+        $adminModel = new AdminModel();
+        $admin = $adminModel
+            ->where('reset_token', $token)
+            ->where('reset_expiry >', date('Y-m-d H:i:s'))
+            ->first();
+
+        if (!$admin) {
+            return redirect()->to('/admin/login')->with('error', 'Invalid or expired token');
+        }
+
+        return view('admin/auth/reset_password', ['token' => $token]);
+    }
+
+    public function processReset()
+    {
+        $token = $this->request->getPost('token');
+        $password = $this->request->getPost('password');
+        $confirmPassword = $this->request->getPost('confirm_password');
+
+        if ($password !== $confirmPassword) {
+            return redirect()->back()->with('error', 'Passwords do not match');
+        }
+
+        $adminModel = new AdminModel();
+        $admin = $adminModel
+            ->where('reset_token', $token)
+            ->where('reset_expiry >', date('Y-m-d H:i:s'))
+            ->first();
+
+        if ($admin) {
+            $adminModel->update($admin['id'], [
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'reset_token' => null,
+                'reset_expiry' => null
+            ]);
+            return redirect()->to('/admin/login')->with('success', 'Password updated successfully. Please login.');
+        }
+
+        return redirect()->to('/admin/login')->with('error', 'Invalid token or request');
+    }
 }

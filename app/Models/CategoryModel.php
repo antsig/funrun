@@ -12,7 +12,7 @@ class CategoryModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    protected $allowedFields = ['event_id', 'name', 'price', 'quota', 'bib_prefix', 'last_bib'];
+    protected $allowedFields = ['event_id', 'name', 'price', 'quota', 'bib_prefix', 'last_bib', 'is_active'];
     // Dates
     protected $useTimestamps = true;
     protected $dateFormat = 'datetime';

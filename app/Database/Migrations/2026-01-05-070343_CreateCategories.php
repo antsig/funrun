@@ -16,6 +16,7 @@ class CreateCategories extends Migration
             'quota' => ['type' => 'INT', 'default' => 0],
             'bib_prefix' => ['type' => 'VARCHAR', 'constraint' => 10, 'null' => true],
             'last_bib' => ['type' => 'INT', 'default' => 0],
+            'is_active' => ['type' => 'TINYINT', 'default' => 1],
             'created_at' => ['type' => 'DATETIME', 'null' => true]
         ]);
         $this->forge->addKey('id', true);

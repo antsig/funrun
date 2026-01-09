@@ -108,7 +108,7 @@ class Checkout extends BaseController
             // If we use transStart, we don't need manual rollback usually, but strict mode is better.
             // Let's rely on transRollback manually for custom exceptions.
             $db->transRollback();
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
     }
 }

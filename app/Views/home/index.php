@@ -80,12 +80,30 @@
                 <div class="card">Belum ada kategori tiket.</div>
             <?php endif; ?>
         </div>
+
+        <?php
+        $cart = session('cart') ?? [];
+        $cartTotal = count($cart);
+        ?>
+        <?php if ($cartTotal > 0): ?>
+            <div style="margin-top: 40px; text-align: center; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                <h3 style="margin-bottom: 10px; color: #333;">Keranjang Belanja</h3>
+                <p style="color: #666; margin-bottom: 20px;">Anda memiliki <strong><?= $cartTotal ?> tiket</strong> yang belum diselesaikan.</p>
+                <a href="/checkout" class="btn btn-success" style="padding: 12px 30px; font-size: 1.1em; border-radius: 50px;">
+                    Lanjut Isi Data Peserta <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 <?php else: ?>
-    <div class="hero" style="background: #95a5a6;">
-        <div class="container">
-            <h1>Acara Tidak Ditemukan</h1>
-            <p>Silakan kembali lagi nanti.</p>
+    <div class="container" style="padding: 100px 20px; text-align: center;">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <i class="fas fa-running" style="font-size: 5em; color: #e0e0e0; margin-bottom: 30px;"></i>
+            <h2 style="color: #333; margin-bottom: 15px; font-weight: bold;">Belum Ada Event Aktif</h2>
+            <p style="color: #7f8c8d; font-size: 1.2em; line-height: 1.6;">
+                Saat ini kami sedang mempersiapkan event lari seru berikutnya untuk Anda.<br>
+                Mohon kembali lagi nanti atau pantau update terbaru dari kami.
+            </p>
         </div>
     </div>
 <?php endif; ?>

@@ -50,7 +50,7 @@
         </div>
 
         <div style="text-align: right;">
-            <a href="/" class="btn" style="color: #7f8c8d; margin-right: 10px;">Tambah Lagi</a>
+            <a href="/#register" class="btn" style="color: #7f8c8d; margin-right: 10px;">Tambah Lagi</a>
             <a href="/checkout" class="btn btn-success">Lanjut Pembayaran &rarr;</a>
         </div>
     <?php endif; ?>

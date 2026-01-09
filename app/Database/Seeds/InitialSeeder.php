@@ -46,5 +46,8 @@ class InitialSeeder extends Seeder
 
         // Insert Categories
         $this->db->table('categories')->insertBatch($categories);
+
+        // Seed Settings
+        $this->call('SettingsSeeder');
     }
 }

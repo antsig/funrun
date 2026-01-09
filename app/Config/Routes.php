@@ -47,16 +47,6 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
         });
         $routes->get('dashboard', 'Dashboard::index');
 
-        // Events
-        $routes->get('events', 'Events::index');
-        $routes->get('events/create', 'Events::create');
-        $routes->post('events/store', 'Events::store');
-        $routes->get('events/edit/(:num)', 'Events::edit/$1');
-        $routes->post('events/update/(:num)', 'Events::update/$1');
-        $routes->post('events/addCategory/(:num)', 'Events::addCategory/$1');
-        $routes->get('events/deleteCategory/(:num)', 'Events::deleteCategory/$1');
-        $routes->get('events/tickets/(:num)', 'Events::tickets/$1');
-
         // Orders
         $routes->get('orders', 'Orders::index');
         $routes->get('orders/show/(:num)', 'Orders::show/$1');
@@ -71,6 +61,37 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
             $routes->get('detail/(:segment)', 'RaceKit::detail/$1');
             $routes->match(['get', 'post'], 'mark/(:num)', 'RaceKit::markCollected/$1');
             $routes->get('mark-all/(:num)', 'RaceKit::markAllCollected/$1');
+        });
+
+        // My Profile
+        $routes->get('profile', 'Profile::index');
+        $routes->post('profile/update', 'Profile::update');
+
+        // User Management
+        // User Management (Protected: Administrator only)
+        // User Management (Protected: Administrator only)
+        $routes->group('', ['filter' => 'role:administrator'], function ($routes) {
+            // Events
+            $routes->get('events', 'Events::index');
+            $routes->get('events/create', 'Events::create');
+            $routes->post('events/store', 'Events::store');
+            $routes->get('events/edit/(:num)', 'Events::edit/$1');
+            $routes->post('events/update/(:num)', 'Events::update/$1');
+            $routes->post('events/addCategory/(:num)', 'Events::addCategory/$1');
+            $routes->get('events/deleteCategory/(:num)', 'Events::deleteCategory/$1');
+            $routes->get('events/tickets/(:num)', 'Events::tickets/$1');
+
+            $routes->get('users', 'Users::index');
+            $routes->get('users/create', 'Users::create');
+            $routes->post('users/store', 'Users::store');
+            $routes->get('users/edit/(:num)', 'Users::edit/$1');
+            $routes->post('users/update/(:num)', 'Users::update/$1');
+            $routes->get('users/delete/(:num)', 'Users::delete/$1');
+
+            // Settings (Protected: Administrator only)
+            $routes->get('settings', 'Settings::index');
+            $routes->post('settings/save', 'Settings::save');
+            $routes->get('settings/test-email', 'Settings::testEmail');
         });
     });
 });

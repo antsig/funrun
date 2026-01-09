@@ -1,6 +1,6 @@
 <footer class="footer">
     <div class="container">
-        &copy; <?= date('Y') ?> FunRun Organizer. Hak Cipta Dilindungi.
+        &copy; <?= date('Y') ?> <?= get_setting('site_title', 'FunRun Organizer') ?>. Hak Cipta Dilindungi.
     </div>
 </footer>
 

@@ -14,8 +14,14 @@
                 <a href="#register" class="btn">DAFTAR SEKARANG</a>
             </div>
             <!-- Optional: Valid Sport Image here if available -->
-             <div class="hero-image-placeholder" style="width: 40%; height: 300px; background: rgba(0,0,0,0.1); border: 2px dashed rgba(255,255,255,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
-                Runner Image
+             <div class="hero-image-placeholder">
+                <?php if ($banner = get_setting('home_banner')): ?>
+                    <img src="/<?= $banner ?>" alt="Event Banner" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                <?php else: ?>
+                    <div style="width: 40%; height: 300px; background: rgba(0,0,0,0.1); border: 2px dashed rgba(255,255,255,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                        Runner Image
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

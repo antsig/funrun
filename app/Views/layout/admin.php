@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FunRun Admin</title>
+    <title><?= get_setting('site_title', 'FunRun') ?> | Admin</title>
+    <link rel="icon" type="image/png" href="/<?= get_setting('site_favicon', 'favicon.ico') ?>">
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -52,7 +53,7 @@
         <div class="float-right d-none d-sm-block">
             <b>Version</b> 1.0.0
         </div>
-        <strong>Copyright &copy; <?= date('Y') ?> FunRun Organizer.</strong> All rights reserved.
+        <strong>Copyright &copy; <?= date('Y') ?> <?= get_setting('site_title', 'FunRun') ?>.</strong> All rights reserved.
     </footer>
 </div>
 <!-- ./wrapper -->

@@ -1,7 +1,12 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/admin/dashboard" class="brand-link">
-        <span class="brand-text font-weight-light">FunRun <b>Admin</b></span>
+        <?php if ($logo = get_setting('site_logo')): ?>
+            <img src="/<?= $logo ?>" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light"><?= get_setting('app_name', 'FunRun') ?></span>
+        <?php else: ?>
+            <span class="brand-text font-weight-light"><?= get_setting('site_title', 'FunRun Admin') ?></span>
+        <?php endif; ?>
     </a>
 
     <!-- Sidebar -->
@@ -17,12 +22,14 @@
                     </a>
                 </li>
                 
+                <?php if (session()->get('role') === 'administrator'): ?>
                 <li class="nav-item">
                     <a href="/admin/events" class="nav-link <?= strpos(current_url(), 'events') ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-calendar-alt"></i>
                         <p>Events</p>
                     </a>
                 </li>
+                <?php endif; ?>
                 
                 <li class="nav-item">
                     <a href="/admin/orders" class="nav-link <?= strpos(current_url(), 'orders') ? 'active' : '' ?>">
@@ -32,9 +39,41 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="/admin/racekit" class="nav-link <?= current_url() == base_url('/admin/racekit') ? 'active' : '' ?>">
+                    <a href="/admin/racekit" class="nav-link <?= strpos(uri_string(), 'racekit') !== false ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-tshirt"></i>
                         <p>Pengambilan Race Kit</p>
+                    </a>
+                </li>
+                
+                <?php if (session()->get('role') === 'administrator'): ?>
+                <li class="nav-item <?= (strpos(uri_string(), 'users') !== false || strpos(uri_string(), 'settings') !== false) ? 'menu-open' : '' ?>">
+                    <a href="#" class="nav-link <?= (strpos(uri_string(), 'users') !== false || strpos(uri_string(), 'settings') !== false) ? 'active' : '' ?>">
+                        <i class="nav-icon fas fa-cogs"></i>
+                        <p>
+                            Pengaturan
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/admin/users" class="nav-link <?= strpos(uri_string(), 'users') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>User (Admin)</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/settings" class="nav-link <?= strpos(uri_string(), 'settings') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Website & Email</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
+                <li class="nav-item">
+                    <a href="/admin/profile" class="nav-link <?= strpos(uri_string(), 'profile') !== false ? 'active' : '' ?>">
+                        <i class="nav-icon fas fa-user-circle"></i>
+                        <p>Profil Saya</p>
                     </a>
                 </li>
                 <li class="nav-item">

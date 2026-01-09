@@ -69,6 +69,7 @@ class Auth extends BaseController
                 'is_admin_logged_in' => true,
                 'admin_id' => $admin['id'],
                 'admin_name' => $admin['name'],
+                'role' => $admin['role'],
             ]);
             session()->remove('temp_admin_id');
 

@@ -93,11 +93,6 @@ header {
   width: 100%;
 }
 
-.hero-content {
-  width: 45%;
-  color: var(--secondary); /* Dark text on yellow background */
-}
-
 /* Special styling for the Hero text to match reference */
 .hero h1 {
   font-size: 4.5rem;
@@ -107,6 +102,9 @@ header {
   margin: 0 0 20px;
   font-style: italic;
   color: var(--secondary);
+  text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(0, 0, 0, 0.1); /* Added text shadow for readability */
+  position: relative;
+  z-index: 10;
 }
 
 .hero p {
@@ -114,19 +112,41 @@ header {
   font-weight: 600;
   margin-bottom: 30px;
   color: var(--dark);
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8); /* Slight shadow for p text */
+  position: relative;
+  z-index: 10;
 }
 
-.hero-image {
+.hero-content {
   width: 50%;
-  text-align: right;
-  /* Placeholder for the runner image */
-  background-image: url("https://placehold.co/600x400/483D8B/FFF?text=Runner+Image");
-  background-size: cover;
-  background-position: center;
-  height: 300px; /* Adjust as needed */
+  padding-right: 20px;
+  flex-shrink: 0; /* Prevent text from being squeezed */
+  position: relative;
+  z-index: 5;
+}
+
+.hero-image-placeholder {
+  width: 45%;
+  height: auto;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 4;
+}
+
+.hero-image-placeholder img {
+  max-width: 100%;
+  height: auto;
   border-radius: 10px;
-  border: 5px solid rgba(255, 255, 255, 0.2);
-  display: none; /* Hide if no real image provided yet, or enable if wanted */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: rotate(2deg); /* Dynamic angle */
+  transition: transform 0.3s ease;
+}
+
+.hero-image-placeholder img:hover {
+  transform: rotate(0deg) scale(1.02);
 }
 
 /* Card Updates */

@@ -27,7 +27,7 @@ class RaceKit extends BaseController
 
     public function search()
     {
-        $orderCode = $this->request->getVar('order_code');
+        $orderCode = trim($this->request->getVar('order_code'));
         if (!$orderCode) {
             return redirect()->back()->with('error', 'Please enter Order Code');
         }
@@ -81,7 +81,7 @@ class RaceKit extends BaseController
 
         $participantModel->update($participantId, $data);
 
-        return redirect()->back()->with('success', 'Participant marked as Collected');
+        return redirect()->to('/admin/racekit')->with('success', 'Participant marked as Collected');
     }
 
     public function markAllCollected($orderId)

@@ -11,6 +11,6 @@ class AdminModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['name', 'email', 'password', 'otp', 'otp_expiration', 'reset_token', 'reset_expiry'];
+    protected $allowedFields = ['name', 'email', 'password', 'role', 'otp', 'otp_expiration', 'reset_token', 'reset_expiry'];
     protected $useTimestamps = true;
 }

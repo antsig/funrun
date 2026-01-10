@@ -43,6 +43,19 @@
                                     <option value="XXL" <?= $pSize == 'XXL' ? 'selected' : '' ?>>XXL</option>
                                 </select>
                             </div>
+                            
+                            <?php if (isset($bibAllowed) && $bibAllowed): ?>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label style="font-size: 0.9em; color: #555;">Request Nomor BIB (Custom)</label>
+                                <input type="number" name="participants[<?= $index ?>][bib_number]" 
+                                       value="<?= old('participants.' . $index . '.bib_number') ?>" 
+                                       class="form-control" 
+                                       placeholder="Isi <?= $bibLength ?> digit angka (Opsional)"
+                                       minlength="<?= $bibLength ?>" maxlength="<?= $bibLength ?>"
+                                       style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100%;">
+                                <small class="text-muted" style="font-size: 0.8em;">Biarkan kosong jika ingin sistem mengacak nomor.</small>
+                            </div>
+                            <?php endif; ?>
 
                             <!-- Row 2 -->
                             <div class="form-group">

@@ -20,6 +20,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-email-tab" data-toggle="pill" href="#custom-tabs-one-email" role="tab" aria-controls="custom-tabs-one-email" aria-selected="false">Email (SMTP)</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-one-bib-tab" data-toggle="pill" href="#custom-tabs-one-bib" role="tab" aria-controls="custom-tabs-one-bib" aria-selected="false">Event & BIB</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-body">
@@ -93,6 +96,28 @@
                                         <input type="password" class="form-control" name="smtp_pass" value="<?= esc($settings['email']['smtp_pass'] ?? '') ?>">
                                     </div>
                                     <a href="/admin/settings/test-email" class="btn btn-warning mt-2">Kirim Email Test</a>
+                                </div>
+
+                                <!-- Event & BIB Tab -->
+                                <div class="tab-pane fade" id="custom-tabs-one-bib" role="tabpanel" aria-labelledby="custom-tabs-one-bib-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4>Konfigurasi BIB</h4>
+                                            <div class="form-group">
+                                                <label>Panjang Karakter BIB</label>
+                                                <input type="number" class="form-control" name="bib_config_length" value="<?= esc($settings['event']['bib_config_length'] ?? '5') ?>" min="3" max="10">
+                                                <small class="text-muted">Jumlah karakter/digit untuk nomor BIB.</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Izinkan Peserta Custom BIB?</label>
+                                                <select class="form-control" name="bib_config_custom_allowed">
+                                                    <option value="1" <?= ($settings['event']['bib_config_custom_allowed'] ?? '0') == '1' ? 'selected' : '' ?>>Ya, Izinkan</option>
+                                                    <option value="0" <?= ($settings['event']['bib_config_custom_allowed'] ?? '0') == '0' ? 'selected' : '' ?>>Tidak</option>
+                                                </select>
+                                                <small class="text-muted">Jika diizinkan, peserta dapat memilih nomor BIB sendiri saat checkout.</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             

@@ -14,8 +14,15 @@ class Checkout extends BaseController
             return redirect()->to('/');
         }
 
+        // Get Settings
+        $settingModel = new \App\Models\SettingModel();
+        $bibAllowed = $settingModel->getValue('bib_config_custom_allowed') == '1';
+        $bibLength = (int) ($settingModel->getValue('bib_config_length') ?? 5);
+
         return view('checkout/form', [
-            'cart' => session()->get('cart')
+            'cart' => session()->get('cart'),
+            'bibAllowed' => $bibAllowed,
+            'bibLength' => $bibLength
         ]);
     }
 
@@ -30,6 +37,11 @@ class Checkout extends BaseController
         $db->transStart();
 
         try {
+            // 0. Settings Check
+            $settingModel = new \App\Models\SettingModel();
+            $bibAllowed = $settingModel->getValue('bib_config_custom_allowed') == '1';
+            $bibLength = (int) ($settingModel->getValue('bib_config_length') ?? 5);
+
             // 1. Validate & Deduct Quota
             $categoryModel = new \App\Models\CategoryModel();
 
@@ -61,15 +73,36 @@ class Checkout extends BaseController
 
             // 3. Create Participants
             $participantModel = new ParticipantModel();
-            foreach ($this->request->getPost('participants') as $p) {
-                $participantModel->insert([
+            foreach ($this->request->getPost('participants') as $index => $p) {
+                $data = [
                     'order_id' => $orderId,
                     'name' => $p['name'],
                     'gender' => $p['gender'],
                     'dob' => $p['dob'],
                     'category_id' => $p['category_id'],
                     'jersey_size' => $p['jersey_size']
-                ]);
+                ];
+
+                // Handle Custom BIB
+                if ($bibAllowed && !empty($p['bib_number'])) {
+                    $requestedBib = $p['bib_number'];
+
+                    // Validation: Length
+                    if (strlen($requestedBib) !== $bibLength) {
+                        throw new \Exception('Nomor BIB untuk peserta ' . ($index + 1) . ' harus ' . $bibLength . ' karakter.');
+                    }
+
+                    // Validation: Unique
+                    // Check if exists in participants table
+                    $exists = $participantModel->where('bib_number', $requestedBib)->first();
+                    if ($exists) {
+                        throw new \Exception("Nomor BIB '" . $requestedBib . "' sudah digunakan. Silakan pilih nomor lain.");
+                    }
+
+                    $data['bib_number'] = $requestedBib;
+                }
+
+                $participantModel->insert($data);
             }
 
             // 4. Get Snap Token

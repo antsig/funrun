@@ -39,6 +39,12 @@ class Settings extends BaseController
                     $newName = $file->getRandomName();
                     $file->move(FCPATH . $path, $newName);
 
+                    // Get old file to delete
+                    $oldFile = $settingModel->getValue($key);
+                    if ($oldFile && file_exists(FCPATH . $oldFile) && is_file(FCPATH . $oldFile)) {
+                        unlink(FCPATH . $oldFile);
+                    }
+
                     // Update DB with new path
                     $settingModel->updateValue($key, $path . '/' . $newName);
                 }

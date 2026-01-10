@@ -26,6 +26,10 @@ $routes->get('/payment/edit/(:segment)', 'Payment::edit/$1');
 $routes->get('/payment/(:segment)', 'Payment::index/$1');
 $routes->post('/payment/manual-confirm/(:segment)', 'ManualPayment::upload/$1');
 
+// Ticket Checking
+$routes->get('cek-tiket', 'Ticket::index');
+$routes->post('cek-tiket', 'Ticket::check');
+
 // Admin Panel
 // Admin Panel
 $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
@@ -92,6 +96,11 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
             $routes->get('settings', 'Settings::index');
             $routes->post('settings/save', 'Settings::save');
             $routes->get('settings/test-email', 'Settings::testEmail');
+
+            // Social Media Management
+            $routes->get('settings/social-media', 'SocialMedia::index');
+            $routes->post('settings/social-media/store', 'SocialMedia::store');
+            $routes->get('settings/social-media/delete/(:num)', 'SocialMedia::delete/$1');
         });
     });
 });

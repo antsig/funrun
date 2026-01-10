@@ -62,9 +62,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/admin/settings" class="nav-link <?= strpos(uri_string(), 'settings') !== false ? 'active' : '' ?>">
+                            <a href="/admin/settings" class="nav-link <?= (strpos(uri_string(), 'settings') !== false && strpos(uri_string(), 'social-media') === false) ? 'active' : '' ?>">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Website & Email</p>
+                            <p>Website & Email</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/settings/social-media" class="nav-link <?= strpos(uri_string(), 'social-media') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Social Media</p>
                             </a>
                         </li>
                     </ul>

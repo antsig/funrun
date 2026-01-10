@@ -80,4 +80,13 @@ class ParticipantModel extends Model
             return false;
         }
     }
+
+    public function getParticipantsByOrder($orderId)
+    {
+        return $this
+            ->select('participants.*, categories.name as category_name')
+            ->join('categories', 'categories.id = participants.category_id')
+            ->where('order_id', $orderId)
+            ->findAll();
+    }
 }

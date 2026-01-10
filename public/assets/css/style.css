@@ -77,10 +77,10 @@ header {
      Using a simpler dual-color gradient for now as a base. */
   background: linear-gradient(110deg, var(--primary) 50%, var(--secondary) 50%);
   color: var(--secondary);
-  padding: 100px 0;
+  padding: 80px 0 100px; /* Reduced top padding to move content up */
   min-height: 400px;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Align to top instead of center */
   overflow: hidden;
 }
 
@@ -265,4 +265,56 @@ input:focus,
 select:focus {
   outline: none;
   border-color: var(--secondary);
+}
+
+/* Countdown Timer */
+#countdown {
+  display: flex;
+  flex-wrap: nowrap; /* Force single line */
+  gap: 8px; /* Small gap */
+  justify-content: flex-start; /* Left align */
+  overflow-x: auto; /* Allow scroll on extreme small screens */
+  width: 100%;
+}
+
+.countdown-item {
+  background: #fff;
+  color: var(--secondary);
+  padding: 4px 8px; /* Very compact padding */
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--secondary);
+  flex: 0 0 auto; /* Do not stretch, fit content */
+  min-width: auto; /* Remove fixed width */
+}
+
+.countdown-item span {
+  font-size: 1.1rem; /* Smaller font for mobile fit */
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-item small {
+  font-size: 0.55rem; /* Tiny label */
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* Tablet and up: scale up slightly */
+@media (min-width: 768px) {
+  .countdown-item {
+    padding: 5px 12px;
+  }
+  .countdown-item span {
+    font-size: 1.5rem;
+  }
+  .countdown-item small {
+    font-size: 0.7rem;
+  }
 }

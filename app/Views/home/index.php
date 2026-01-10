@@ -10,8 +10,46 @@
                     <span style="display: block; transform: skewX(10deg);">EVENT TERDEKAT</span>
                 </div>
                 <h1><?= esc($event['name']) ?></h1>
-                <p><?= date('d F Y', strtotime($event['event_date'])) ?> &bull; <?= esc($event['location']) ?></p>
-                <a href="#register" class="btn">DAFTAR SEKARANG</a>
+                <p><i class="fas fa-calendar-alt"></i> <?= date('d F Y', strtotime($event['event_date'])) ?> &nbsp; <i class="fas fa-clock"></i> <?= date('H:i', strtotime($event['event_date'])) ?> WITA &bull; <i class="fas fa-map-marker-alt"></i> <?= esc($event['location']) ?></p>
+                
+                <?php
+                $deadline = $event['registration_deadline'] ?? $event['event_date'];
+                ?>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                    <i class="fas fa-hourglass-end"></i> Batas Pendaftaran: <?= date('d F Y • H:i', strtotime($deadline)) ?> WITA
+                </p>
+
+                <!-- Countdown Timer -->
+                <div id="countdown" class="mb-4">
+                    <div class="countdown-item">
+                        <span id="days">00</span>
+                        <small>Hari</small>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="hours">00</span>
+                        <small>Jam</small>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="minutes">00</span>
+                        <small>Menit</small>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds">00</span>
+                        <small>Detik</small>
+                    </div>
+                </div>
+                <br>
+
+                <?php
+                $isClosed = date('Y-m-d H:i:s') > $deadline;
+                ?>
+
+                <?php if ($isClosed): ?>
+                    <button class="btn btn-secondary" disabled style="background: #95a5a6; cursor: not-allowed;">PENDAFTARAN DITUTUP</button>
+                    <p class="mt-2 text-white"><small>Batas pendaftaran: <?= date('d F Y H:i', strtotime($deadline)) ?></small></p>
+                <?php else: ?>
+                    <a href="#register" class="btn">DAFTAR SEKARANG</a>
+                <?php endif; ?>
             </div>
             <!-- Optional: Valid Sport Image here if available -->
              <div class="hero-image-placeholder">
@@ -114,36 +152,96 @@
     </div>
 <?php endif; ?>
 
-<?= $this->endSection() ?>
-
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php
+    if (!empty($event)):
+        // Use registration_deadline if set, otherwise event_date
+        $targetDate = $event['registration_deadline'] ?? $event['event_date'];
+
+        // Ensure we have a string
+        if (!$targetDate) {
+            $timestamp = 0;  // Invalid
+        } else {
+            $timestamp = (int) strtotime($targetDate) * 1000;
+        }
+    else:
+        $timestamp = 0;
+    endif;
+    ?>
+    
+    // Server Timestamp: <?= $timestamp ?> 
+    const targetDate = <?= $timestamp ?>;
+    
+    // Safety check for DOM elements
+    const elDays = document.getElementById("days");
+    const elHours = document.getElementById("hours");
+    const elMinutes = document.getElementById("minutes");
+    const elSeconds = document.getElementById("seconds");
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        
+        // If targetDate is 0 or invalid, consider closed/past
+        if (!targetDate || targetDate <= 0) {
+            handleExpired();
+            return;
+        }
+
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+            handleExpired();
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Update DOM safely
+        if(elDays) elDays.innerText = days.toString().padStart(2, '0');
+        if(elHours) elHours.innerText = hours.toString().padStart(2, '0');
+        if(elMinutes) elMinutes.innerText = minutes.toString().padStart(2, '0');
+        if(elSeconds) elSeconds.innerText = seconds.toString().padStart(2, '0');
+    }
+
+    function handleExpired() {
+        const countdownEl = document.getElementById("countdown");
+        if (countdownEl) {
+             // Only update if not already updated to avoid flickering/looping
+             if (!countdownEl.innerHTML.includes("PENDAFTARAN DITUTUP")) {
+                 countdownEl.innerHTML = "<div class='time-box' style='width:100%; min-width:auto; padding: 10px 20px; background: rgba(255, 0, 0, 0.6);'><span style='font-size:1.5rem'>PENDAFTARAN DITUTUP</span></div>";
+             }
+        }
+        
+        const btn = document.querySelector('a[href="#register"]');
+        if(btn) btn.style.display = 'none';
+    }
+
+    // Run interval
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // Run immediately
+});
+
+// Qty Function (Global)
 function updateQty(btn, change) {
     const wrapper = btn.closest('div');
     const input = wrapper.querySelector('input');
-    const btnMinus = wrapper.querySelector('.btn-minus');
-    const btnPlus = wrapper.querySelector('.btn-plus');
+    
+    if(!input) return;
     
     let newVal = parseInt(input.value) + change;
     if (newVal < 1) newVal = 1;
     if (newVal > 10) newVal = 10;
     
     input.value = newVal;
-
-    // Update Button States
-    if (newVal <= 1) {
-        btnMinus.disabled = true;
-        btnMinus.style.color = '#aaa';
-    } else {
-        btnMinus.disabled = false;
-        btnMinus.style.color = '#333';
-    }
-
-    if (newVal >= 10) {
-        btnPlus.disabled = true;
-        btnPlus.style.color = '#aaa';
-    } else {
-        btnPlus.disabled = false;
-        btnPlus.style.color = '#333';
-    }
+    
+    // Update display if needed (wrapper sibling)
+    const displaySpan = wrapper.querySelector('span'); 
+    if(displaySpan) displaySpan.innerText = newVal;
 }
 </script>
+
+<?= $this->endSection() ?>

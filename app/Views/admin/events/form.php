@@ -26,8 +26,13 @@
                         <input type="text" class="form-control" name="name" value="<?= isset($event) ? esc($event['name']) : '' ?>" required>
                     </div>
                     <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" class="form-control" name="event_date" value="<?= isset($event) ? $event['event_date'] : '' ?>" required>
+                        <label>Date & Time</label>
+                        <input type="datetime-local" class="form-control" name="event_date" value="<?= isset($event) ? date('Y-m-d\TH:i', strtotime($event['event_date'])) : '' ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Deadline</label>
+                        <input type="datetime-local" class="form-control" name="registration_deadline" value="<?= isset($event) && $event['registration_deadline'] ? date('Y-m-d\TH:i', strtotime($event['registration_deadline'])) : '' ?>">
+                        <small class="text-muted">Empty = No deadline (Event Date)</small>
                     </div>
                     <div class="form-group">
                         <label>Location</label>

@@ -21,14 +21,8 @@ Web application for managing the FunRun event. This system handles participant r
 2.  **Install Dependencies**:
 
     ```bash
-    composer install
+    composer install --no-dev --optimize-autoloader
     ```
-
-    > [!TIP] > **Vendor Optimization**: To reduce the size of the `vendor` folder (removing testing tools like PHPUnit/Faker), use the `--no-dev` flag. This is recommended for production/hosting:
-    >
-    > ```bash
-    > composer install --no-dev --optimize-autoloader
-    > ```
 
 3.  **Environment Setup**:
     Copy `env` to `.env` and configure your database and Midtrans keys.
@@ -85,11 +79,14 @@ Access the application at `http://localhost:8080`.
 - **Public**:
   - Event Registration (Single/Group)
   - Checkout & Payment (Midtrans Gateway)
+  - Manual Payment Proof Upload
   - Payment Status Check
+  - Event Countdown Timer
 - **Admin**:
   - Dashboard (Statistics)
   - Event Management (Events & Categories)
-  - Order Management (Verify payments, Generate BIB)
+  - Order Management (Verify payments, Filter by Status/Category, Generate BIB with custom formats)
+  - Social Media Management
   - Secure Login with OTP support
 
 ## 📂 Project Structure

@@ -10,6 +10,7 @@
         </a>
         <nav>
             <a href="/" class="nav-link">Beranda</a>
+            <a href="/cek-tiket" class="nav-link">Cek Tiket</a>
             <a href="/registration" class="nav-link">Keranjang (<?= count(session()->get('cart') ?? []) ?>)</a>
         </nav>
     </div>

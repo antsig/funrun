@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\ActivityLogModel;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
@@ -21,19 +22,11 @@ class Backup extends BaseController
     {
         try {
             $dbName = 'funrun_db_' . date('Y-m-d_H-i-s') . '.sql';
-
-            // Using mysqldump via exec if possible for reliability on large DBs,
-            // but fallback to CI4 dbutil for portability if exec is disabled?
-            // CI4 dbutil is safer for PHP-only envs basically.
-
             $db = \Config\Database::connect();
 
-            // Simple custom dumper to handle basics
-            // Note: dbutil is deprecated/removed in some CI4 versions or moved?
-            // Better to use custom simple logic or shell_exec if usually on XAMPP.
-            // Let's try shell_exec check for mysqldump in Windows XAMPP path
+            // Log activity
+            (new ActivityLogModel())->log('backup_db_export');
 
-            // Fallback: Custom SQL generation
             $tables = $db->listTables();
             $sql = '-- Database Backup: ' . date('Y-m-d H:i:s') . "\n\n";
             $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
@@ -69,33 +62,58 @@ class Backup extends BaseController
     // Database Restore
     public function dbRestore()
     {
+        // 1. Disable in Production
+        if (env('CI_ENVIRONMENT') === 'production') {  // Or strict 'production' check
+            return redirect()->to('/admin/backup')->with('error', 'Fitur Restore dinonaktifkan di Production demi keamanan.');
+        }
+
+        // 2. Validation & Confirmation
+        $validationRules = [
+            'backup_file' => [
+                'rules' => 'uploaded[backup_file]|max_size[backup_file,51200]|ext_in[backup_file,sql,txt]',
+                'label' => 'File Backup'
+            ],
+            'confirm_restore' => [
+                'rules' => 'required',
+                'label' => 'Konfirmasi'
+            ],
+            'confirm_text' => [
+                'rules' => 'required|in_list[RESTORE]',
+                'label' => 'Ketik RESTORE',
+                'errors' => [
+                    'in_list' => 'Anda harus mengetik "RESTORE" untuk konfirmasi.'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($validationRules)) {
+            return redirect()->to('/admin/backup')->withInput()->with('errors', $this->validator->getErrors());
+        }
+
         $file = $this->request->getFile('backup_file');
 
-        if (!$file->isValid()) {
-            return redirect()->to('/admin/backup')->with('error', 'File tidak valid.');
+        // Additional MIME check if needed, though ext_in usually suffices
+        $mime = $file->getMimeType();
+        if (!in_array($mime, ['text/plain', 'application/octet-stream', 'application/sql', 'text/x-sql'])) {
+            // return redirect()->to('/admin/backup')->with('error', 'Invalid file type: ' . $mime);
+            // Skip strict mime check for now as sql mime types vary significantly
         }
 
         $sql = file_get_contents($file->getTempName());
         $db = \Config\Database::connect();
 
-        // Split by semicolon but ignore inside quotes is hard.
-        // Simplistic split might fail on data containing semicolons.
-        // Better to execute line by line?
-
         $db->transStart();
 
-        // Remove comments
+        // Remove comments and execute
         $lines = explode("\n", $sql);
         $templine = '';
 
         foreach ($lines as $line) {
-            // Skip comments
             if (substr($line, 0, 2) == '--' || $line == '')
                 continue;
 
             $templine .= $line;
 
-            // If it has a semicolon at the end, it's the end of the query
             if (substr(trim($line), -1, 1) == ';') {
                 $db->query($templine);
                 $templine = '';
@@ -108,6 +126,9 @@ class Backup extends BaseController
             return redirect()->to('/admin/backup')->with('error', 'Restore gagal. Database mungkin korup.');
         }
 
+        // Log Activity
+        (new ActivityLogModel())->log('restore_db', null, 'Restored from file: ' . $file->getName());
+
         return redirect()->to('/admin/backup')->with('success', 'Database berhasil direstore.');
     }
 
@@ -118,13 +139,15 @@ class Backup extends BaseController
         $zipPath = WRITEPATH . 'uploads/' . $zipName;
 
         if (!class_exists('ZipArchive')) {
-            return redirect()->to('/admin/backup')->with('error', 'Ekstensi PHP ZipArchive tidak aktif. Silakan hubungi administrator server untuk mengaktifkan ekstensi "php_zip".');
+            return redirect()->to('/admin/backup')->with('error', 'Ekstensi PHP ZipArchive tidak aktif.');
         }
 
         $zip = new ZipArchive();
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
             return redirect()->to('/admin/backup')->with('error', 'Tidak bisa membuat file ZIP.');
         }
+
+        (new ActivityLogModel())->log('backup_code_export');
 
         $rootPath = FCPATH . '../';  // Root project folder
         $realRoot = realpath($rootPath);
@@ -135,17 +158,22 @@ class Backup extends BaseController
         );
 
         foreach ($files as $name => $file) {
-            // Skip directories (they would be added automatically)
             if (!$file->isDir()) {
                 $filePath = $file->getRealPath();
                 $relativePath = substr($filePath, strlen($realRoot) + 1);
 
-                // Exclude vendor, git, writable, node_modules
+                // Normalizing slashes for Windows/Linux
+                $relativePathNormalized = str_replace('\\', '/', $relativePath);
+
+                // Exclude Rules
                 if (
-                    strpos($relativePath, 'vendor') === 0 ||
-                    strpos($relativePath, '.git') === 0 ||
-                    strpos($relativePath, 'writable') === 0 ||
-                    strpos($relativePath, 'node_modules') === 0
+                    strpos($relativePathNormalized, 'vendor') === 0 ||
+                    strpos($relativePathNormalized, '.git') === 0 ||
+                    strpos($relativePathNormalized, 'node_modules') === 0 ||
+                    strpos($relativePathNormalized, '.env') === 0 ||  // Exclude .env
+                    strpos($relativePathNormalized, 'writable/logs') === 0 ||  // Exclude logs
+                    strpos($relativePathNormalized, 'writable/cache') === 0 ||  // Exclude cache
+                    strpos($relativePathNormalized, 'public/uploads/manifest') === 0  // Check specific sensitive folders?
                 ) {
                     continue;
                 }

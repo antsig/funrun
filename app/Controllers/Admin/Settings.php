@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\ActivityLogModel;
 use App\Models\SettingModel;
 
 class Settings extends BaseController
@@ -52,6 +53,7 @@ class Settings extends BaseController
         }
 
         // Handle Text Inputs
+        $count = 0;
         foreach ($postData as $key => $value) {
             // Ignore CSRF token and other non-setting fields if any
             if ($key == 'csrf_test_name')
@@ -60,7 +62,12 @@ class Settings extends BaseController
             // Check if key exists in DB to avoid errors
             if ($settingModel->where('key', $key)->first()) {
                 $settingModel->updateValue($key, $value);
+                $count++;
             }
+        }
+
+        if ($count > 0 || !empty($_FILES)) {
+            (new ActivityLogModel())->log('update_settings', null, 'Modified settings');
         }
 
         return redirect()->to('/admin/settings')->with('success', 'Pengaturan berhasil disimpan');

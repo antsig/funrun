@@ -29,14 +29,42 @@
                         <h5>Restore Database</h5>
                         <p class="text-danger"><strong>PERINGATAN:</strong> Tindakan ini akan menghapus dan menimpa seluruh data saat ini! Pastikan Anda memiliki backup terbaru.</p>
                         
-                        <form action="/admin/backup/db-restore" method="post" enctype="multipart/form-data" onsubmit="return confirm('Apakah Anda YAKIN ingin merestore database? Data saat ini akan TIMPA/HILANG!');">
+                        <?php if (session()->has('errors')): ?>
+                            <div class="alert alert-danger">
+                                <ul>
+                                <?php foreach (session('errors') as $error): ?>
+                                    <li><?= esc($error) ?></li>
+                                <?php endforeach ?>
+                                </ul>
+                            </div>
+                        <?php endif ?>
+
+                        <form action="/admin/backup/db-restore" method="post" enctype="multipart/form-data">
+                            <?= csrf_field() ?>
                             <div class="form-group">
                                 <label>Upload File .sql</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="backup_file" accept=".sql" required>
-                                    <label class="custom-file-label">Pilih file...</label>
+                                    <input type="file" class="custom-file-input" name="backup_file" id="backup_file" accept=".sql" required>
+                                    <label class="custom-file-label" for="backup_file">Pilih file...</label>
                                 </div>
                             </div>
+
+                            <div class="form-group bg-light p-3 border rounded">
+                                <label class="text-danger font-weight-bold">Konfirmasi Keamanan</label>
+                                
+                                <div class="custom-control custom-checkbox mb-2">
+                                    <input type="checkbox" class="custom-control-input" id="confirm_restore" name="confirm_restore" value="1">
+                                    <label class="custom-control-label text-danger" for="confirm_restore">
+                                        Saya mengerti bahwa data saat ini akan ditimpa dan hilang permanen.
+                                    </label>
+                                </div>
+
+                                <div class="form-group mb-0">
+                                    <label>Ketik <code>RESTORE</code> untuk melanjutkan:</label>
+                                    <input type="text" class="form-control" name="confirm_text" placeholder="RESTORE" autocomplete="off" required>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-danger btn-block">
                                 <i class="fas fa-upload"></i> Restore Database
                             </button>

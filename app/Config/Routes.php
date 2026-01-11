@@ -114,6 +114,24 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
             $routes->get('backup/db-export', 'Backup::dbExport');
             $routes->post('backup/db-restore', 'Backup::dbRestore');
             $routes->get('backup/code-export', 'Backup::codeExport');
+
+            // Logs
+            $routes->get('logs', 'ActivityLogs::index');
+
+            // Email Queue
+            $routes->get('queue', 'EmailQueue::index');
+            $routes->get('queue/retry/(:num)', 'EmailQueue::retry/$1');
+            $routes->get('queue/delete/(:num)', 'EmailQueue::delete/$1');
+
+            // API Tokens
+            $routes->get('api-tokens', 'ApiTokens::index');
+            $routes->post('api-tokens/create', 'ApiTokens::create');
+            $routes->get('api-tokens/revoke/(:num)', 'ApiTokens::revoke/$1');
         });
     });
+});
+// API Routes
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+    $routes->get('stats/summary', 'Stats::summary');
+    $routes->get('stats/participants', 'Stats::participants');
 });

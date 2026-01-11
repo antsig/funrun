@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\ActivityLogModel;  // Added
 use App\Models\OrderModel;
 use App\Models\ParticipantModel;
 use App\Models\PaymentModel;
@@ -71,18 +72,23 @@ class Orders extends BaseController
 
     public function updateStatus($id)
     {
-        $model = new OrderModel();
-        $model->update($id, ['payment_status' => $this->request->getPost('status')]);
+        $newStatus = $this->request->getPost('status');
 
-        // Generate BIB if Paid manual (or changed to paid)
-        if ($this->request->getPost('status') == 'paid') {
-            $participantModel = new ParticipantModel();
-            $participants = $participantModel->where('order_id', $id)->findAll();
-            foreach ($participants as $p) {
-                // Check if BIB exists to prevent regeneration?
-                // generateBib checks internally usually or overwrites.
-                $participantModel->generateBib($p['id']);
+        // If paid, go through service to ensure BIBs and logs
+        if ($newStatus == 'paid') {
+            try {
+                (new \App\Services\PaymentVerificationService())->approve($id, session()->get('admin_id'));
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', $e->getMessage());
             }
+        } else {
+            // For other status manual updates (e.g. pending/failed)
+            // We can use the service reject or just update directly if it's a simple status change
+            // But if we want state machine enforcement, we should put it in service.
+            // For now, let's keep simple manual update for non-paid via model but adding log.
+            $model = new OrderModel();
+            $model->update($id, ['payment_status' => $newStatus]);
+            (new ActivityLogModel())->log('update_order_status', $id, "Status changed to $newStatus");
         }
 
         return redirect()->back()->with('success', 'Order status updated');
@@ -90,35 +96,21 @@ class Orders extends BaseController
 
     public function approvePayment($orderId)
     {
-        $orderModel = new OrderModel();
-        $order = $orderModel->find($orderId);
-
-        if (!$order) {
-            return redirect()->back()->with('error', 'Order not found');
+        try {
+            (new \App\Services\PaymentVerificationService())->approve($orderId, session()->get('admin_id'));
+            return redirect()->back()->with('success', 'Payment approved manually.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        // Update Order to Paid
-        $updateData = [
-            'payment_status' => 'paid',
-            'confirmed_by' => session()->get('admin_id')  // Track admin
-        ];
-        $orderModel->update($orderId, $updateData);
-
-        // Generate BIBs
-        $participantModel = new ParticipantModel();
-        $participants = $participantModel->where('order_id', $orderId)->findAll();
-        foreach ($participants as $p) {
-            $participantModel->generateBib($p['id']);
-        }
-
-        return redirect()->back()->with('success', 'Payment approved manually.');
     }
 
     public function rejectPayment($orderId)
     {
-        $orderModel = new OrderModel();
-        $orderModel->update($orderId, ['payment_status' => 'failed']);
-
-        return redirect()->back()->with('success', 'Payment rejected.');
+        try {
+            (new \App\Services\PaymentVerificationService())->reject($orderId, 'Manual Rejection by Admin');
+            return redirect()->back()->with('success', 'Payment rejected.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

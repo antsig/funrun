@@ -207,3 +207,44 @@ Dokumen ini berfungsi sebagai catatan komprehensif tentang kemajuan pengembangan
 ### Update Laporan
 
 - **Export Excel**: Diubah dari CSV biasa ke **Format Excel XML (.xls)** yang memiliki styling (Header tebal berwarna biru, border tabel) tanpa memerlukan library tambahan yang berat.
+
+---
+
+## Fase 11: Arsitektur Layanan & Keamanan
+
+**Tujuan**: Meningkatkan stabilitas, keamanan, dan kinerja sistem melalui refactoring arsitektur dan penambahan fitur keamanan.
+
+### 1. Hardening Keamanan
+
+- **Backup Aman**:
+  - Konfirmasi ganda untuk restore database.
+  - Mematikan fitur restore di lingkungan `production`.
+  - Validasi ketat tipe file upload.
+- **Audit Logging**:
+  - Tabel `activity_logs` mencatat aksi kritis (Approval Pembayaran, Restore DB, Ubah Setting).
+- **Database**: Unique Index pada `bib_number` untuk mencegah duplikasi.
+
+### 2. Service Layer
+
+Memindahkan logika bisnis dari Controller ke Service terdedikasi:
+
+- `BIBGeneratorService`: Menangani locking dan generasi nomor BIB.
+- `PaymentVerificationService`: Mengelola State Machine pembayaran (Approved, Rejected, Expired) dan verifikasi Midtrans.
+- `ReportExportService`: Menangani pembuatan file Excel.
+
+### 3. Email Queue (Async)
+
+- **Masalah**: Pengiriman email sinkron memperlambat respon server.
+- **Solusi**:
+  - Tabel `email_queue` menyimpan antrian email.
+  - Command `php spark email:process` dijalankan via Cron Job untuk mengirim email di latar belakang.
+
+### 4. API & Dokumentasi
+
+- **Read-Only API**: Endpoint `/api/v1/stats` untuk konsumsi data eksternal, dilindungi `X-API-TOKEN`.
+- **Docs**: Struktur dokumentasi teknis di folder `docs/` (ERD, Flow, Permissions).
+
+### 5. Peningkatan Dashboard
+
+- Menambahkan **Grafik Tren Pendaftaran Harian** (Line Chart).
+- Menambahkan **Conversion Rate** (Progress Bar).

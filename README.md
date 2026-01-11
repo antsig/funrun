@@ -84,22 +84,42 @@ Access the application at `http://localhost:8080`.
   - Event Countdown Timer
 - **Admin**:
   - **Dashboard**:
-    - Real-time Statistics (Events, Orders, Participants)
-    - Revenue Tracking (Total Income Card)
-    - Visual Charts (Ticket Sales Status)
+    - Real-time Statistics & Daily Trend Charts.
+    - Conversion Rate Tracking.
+    - Revenue & Ticket Sales Visuals.
   - **Event Management**: Create Events & Categories, Manage Quotas.
   - **Order Management**: Verify payments, Filter by Status, BIB Generation.
   - **Reports Module**:
     - Orders & Participants Report.
-    - Export to Excel (.csv) & Print to PDF.
+    - Export to Excel (.xls) with Styling.
   - **Social Media Management**: Manage links with auto-detected icons.
   - **Settings**:
     - General Site Settings.
-    - Email Configuration (SMTP Port, Crypto, Auto-detect).
-  - **System Tools**:
-    - Database Backup & Restore (.sql).
-    - Source Code Backup (.zip).
-  - Secure Login with OTP support.
+    - Email Configuration (SMTP Port, Crypto).
+  - **System Tools (Hardened)**:
+    - Database Backup & Restore (Production-Safe).
+    - Source Code Backup.
+    - Audit Logs for critical actions.
+- **System**:
+  - **Service Layer Architecture**: Decoupled logic.
+  - **Async Email Queue**: Reliable background email sending.
+  - **Read-Only API**: Protected endpoints.
+
+## ⏰ Cron Job Setup (Email Queue)
+
+To process the email queue, set up a cron job to run the following command every minute:
+
+```bash
+php spark email:process
+```
+
+## 🔐 API Security
+
+To access the Read-Only API, add the following to your `.env` file and use it as `X-API-TOKEN` header:
+
+```ini
+API_READ_TOKEN=your_secure_secret_token
+```
 
 ## 📂 Project Structure
 

@@ -59,8 +59,8 @@
                 </li>
                 
                 <?php if (session()->get('role') === 'administrator'): ?>
-                <li class="nav-item <?= (strpos(uri_string(), 'users') !== false || strpos(uri_string(), 'settings') !== false) ? 'menu-open' : '' ?>">
-                    <a href="#" class="nav-link <?= (strpos(uri_string(), 'users') !== false || strpos(uri_string(), 'settings') !== false) ? 'active' : '' ?>">
+                <li class="nav-item <?= (strpos(uri_string(), 'users') !== false || strpos(uri_string(), 'settings') !== false || strpos(uri_string(), 'backup') !== false || strpos(uri_string(), 'logs') !== false || strpos(uri_string(), 'queue') !== false || strpos(uri_string(), 'api-tokens') !== false) ? 'menu-open' : '' ?>">
+                    <a href="#" class="nav-link <?= (strpos(uri_string(), 'users') !== false || strpos(uri_string(), 'settings') !== false || strpos(uri_string(), 'backup') !== false || strpos(uri_string(), 'logs') !== false || strpos(uri_string(), 'queue') !== false || strpos(uri_string(), 'api-tokens') !== false) ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-cogs"></i>
                         <p>
                             Pengaturan
@@ -90,6 +90,24 @@
                             <a href="/admin/backup" class="nav-link <?= strpos(uri_string(), 'backup') !== false ? 'active' : '' ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Backup & Restore</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/logs" class="nav-link <?= strpos(uri_string(), 'logs') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Activity Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/queue" class="nav-link <?= strpos(uri_string(), 'queue') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Email Queue</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/api-tokens" class="nav-link <?= strpos(uri_string(), 'api-tokens') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>API Tokens</p>
                             </a>
                         </li>
                     </ul>

@@ -9,7 +9,7 @@ class InitialSeeder extends Seeder
     public function run()
     {
         $eventData = [
-            'name' => 'FunRun Gorontalo Utaras 2026',
+            'name' => 'FunRun Gorontalo Utara 2026',
             'description' => 'Join the biggest running event in Gorontalo! Experience the thrill of running through the city streets with thousands of other participants. Medals and jerseys included for all finishers.',
             'event_date' => date('Y-m-d H:i:s', strtotime('+3 months')),
             'registration_deadline' => date('Y-m-d H:i:s', strtotime('+2 months 3 weeks')),

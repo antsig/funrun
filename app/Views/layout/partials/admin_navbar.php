@@ -7,6 +7,13 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="/admin/dashboard" class="nav-link">Home</a>
         </li>
+        <?php if (getenv('CI_ENVIRONMENT') === 'production'): ?>
+        <li class="nav-item d-none d-md-inline-block">
+            <a href="#" class="nav-link text-danger font-weight-bold" style="border: 2px solid red; border-radius: 5px; padding: 5px 10px; margin-top: 2px;">
+                <i class="fas fa-exclamation-triangle"></i> PRODUCTION MODE
+            </a>
+        </li>
+        <?php endif; ?>
     </ul>
 
     <!-- Right navbar links -->

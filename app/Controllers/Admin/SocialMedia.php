@@ -28,7 +28,7 @@ class SocialMedia extends BaseController
         $validation = \Config\Services::validation();
         $validation->setRules([
             'url' => 'required|valid_url',
-            'account_name' => 'required',  // Now acting as display text
+            'account_name' => 'required',  // Sekarang bertindak sebagai teks tampilan
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -47,14 +47,14 @@ class SocialMedia extends BaseController
             'is_active' => 1
         ]);
 
-        return redirect()->to('/admin/settings/social-media')->with('success', 'Social media added successfully.');
+        return redirect()->to('/admin/settings/social-media')->with('success', 'Social media berhasil ditambahkan.');
     }
 
     public function delete($id)
     {
-        // No file deletion needed as we store CSS classes now
+        // Tidak perlu menghapus file karena kita menyimpan class CSS sekarang
         $this->socialMediaModel->delete($id);
-        return redirect()->to('/admin/settings/social-media')->with('success', 'Social media deleted successfully.');
+        return redirect()->to('/admin/settings/social-media')->with('success', 'Social media berhasil dihapus.');
     }
 
     private function detectPlatform($url)
@@ -85,7 +85,7 @@ class SocialMedia extends BaseController
             case 'Instagram':
                 return 'fab fa-instagram';
             case 'Twitter':
-                return 'fab fa-twitter';  // or fa-x-twitter if updated
+                return 'fab fa-twitter';  // atau fa-x-twitter jika diperbarui
             case 'YouTube':
                 return 'fab fa-youtube';
             case 'TikTok':

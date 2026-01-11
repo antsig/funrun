@@ -39,7 +39,9 @@ class Dashboard extends BaseController
                 ->join('orders', 'orders.id = participants.order_id')
                 ->where('orders.payment_status !=', 'paid')
                 ->countAllResults(),
-            'recent_orders' => $orderModel->orderBy('created_at', 'DESC')->limit(5)->find()
+            'recent_orders' => $orderModel->orderBy('created_at', 'DESC')->limit(5)->find(),
+            // Financials
+            'total_revenue' => $orderModel->selectSum('total_amount')->where('payment_status', 'paid')->first()['total_amount'] ?? 0
         ];
 
         // Ticket Stats Logic

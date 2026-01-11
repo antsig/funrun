@@ -41,7 +41,20 @@
                 <li class="nav-item">
                     <a href="/admin/racekit" class="nav-link <?= strpos(uri_string(), 'racekit') !== false ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-tshirt"></i>
-                        <p>Pengambilan Race Kit</p>
+                        <p>Race Kit</p>
+                    </a>
+                </li>                
+
+                <li class="nav-item">
+                    <a href="/admin/reports" class="nav-link <?= strpos(uri_string(), 'reports') !== false ? 'active' : '' ?>">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>Laporan</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/profile" class="nav-link <?= strpos(uri_string(), 'profile') !== false ? 'active' : '' ?>">
+                        <i class="nav-icon fas fa-user-circle"></i>
+                        <p>Profil Saya</p>
                     </a>
                 </li>
                 
@@ -56,32 +69,32 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/admin/users" class="nav-link <?= strpos(uri_string(), 'users') !== false ? 'active' : '' ?>">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>User (Admin)</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="/admin/settings" class="nav-link <?= (strpos(uri_string(), 'settings') !== false && strpos(uri_string(), 'social-media') === false) ? 'active' : '' ?>">
                                 <i class="far fa-circle nav-icon"></i>
                             <p>Website & Email</p>
                             </a>
-                        </li>
+                        </li>                        
                         <li class="nav-item">
                             <a href="/admin/settings/social-media" class="nav-link <?= strpos(uri_string(), 'social-media') !== false ? 'active' : '' ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Social Media</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="/admin/users" class="nav-link <?= strpos(uri_string(), 'users') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kelola User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/backup" class="nav-link <?= strpos(uri_string(), 'backup') !== false ? 'active' : '' ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Backup & Restore</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <?php endif; ?>
-                <li class="nav-item">
-                    <a href="/admin/profile" class="nav-link <?= strpos(uri_string(), 'profile') !== false ? 'active' : '' ?>">
-                        <i class="nav-icon fas fa-user-circle"></i>
-                        <p>Profil Saya</p>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a href="/admin/logout" class="nav-link text-danger">
                         <i class="nav-icon fas fa-sign-out-alt"></i>

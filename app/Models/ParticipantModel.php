@@ -40,37 +40,35 @@ class ParticipantModel extends Model
     {
         $participant = $this->find($participantId);
         if (!$participant || !empty($participant['bib_number'])) {
-            return false;  // Already has BIB or not found
+            return false;  // Sudah punya BIB atau tidak ditemukan
         }
 
         $db = \Config\Database::connect();
         $db->transStart();
 
         try {
-            // Lock Category
+            // Kunci Kategori (Lock)
             $categoryModel = new CategoryModel();
 
-            // Raw query to lock row for update
+            // Raw query untuk mengunci baris (lock for update)
             $category = $db->query('SELECT * FROM categories WHERE id = ? FOR UPDATE', [$participant['category_id']])->getRowArray();
 
             if (!$category) {
-                throw new \Exception('Category not found');
+                throw new \Exception('Kategori tidak ditemukan');
             }
 
             $prefix = $category['bib_prefix'] ?? '';
             $currentLast = $category['last_bib'];
 
-            // If last_bib is 0, maybe set a default start like 100? Or just 1.
-            // Let's assume start from 1 if 0.
-            // But if user set inputs, last_bib might be 1000.
+            // Jika last_bib adalah 0, mulai dari 1.
             $newSeq = $currentLast + 1;
 
             $bibNumber = $prefix . str_pad($newSeq, 3, '0', STR_PAD_LEFT);
 
-            // Update Category
+            // Update Kategori
             $categoryModel->update($category['id'], ['last_bib' => $newSeq]);
 
-            // Update Participant
+            // Update Peserta
             $this->update($participantId, ['bib_number' => $bibNumber]);
 
             $db->transComplete();

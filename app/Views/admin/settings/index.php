@@ -18,10 +18,10 @@
                                 <a class="nav-link active" id="custom-tabs-one-general-tab" data-toggle="pill" href="#custom-tabs-one-general" role="tab" aria-controls="custom-tabs-one-general" aria-selected="true">Umum & Tampilan</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-email-tab" data-toggle="pill" href="#custom-tabs-one-email" role="tab" aria-controls="custom-tabs-one-email" aria-selected="false">Email (SMTP)</a>
+                                <a class="nav-link" id="custom-tabs-one-bib-tab" data-toggle="pill" href="#custom-tabs-one-bib" role="tab" aria-controls="custom-tabs-one-bib" aria-selected="false">Event & BIB</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-bib-tab" data-toggle="pill" href="#custom-tabs-one-bib" role="tab" aria-controls="custom-tabs-one-bib" aria-selected="false">Event & BIB</a>
+                                <a class="nav-link" id="custom-tabs-one-email-tab" data-toggle="pill" href="#custom-tabs-one-email" role="tab" aria-controls="custom-tabs-one-email" aria-selected="false">Email (SMTP)</a>
                             </li>
                         </ul>
                     </div>
@@ -95,6 +95,37 @@
                                         <label>SMTP Password</label>
                                         <input type="password" class="form-control" name="smtp_pass" value="<?= esc($settings['email']['smtp_pass'] ?? '') ?>">
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>SMTP Port</label>
+                                                <input type="number" class="form-control" name="smtp_port" id="smtp_port" value="<?= esc($settings['email']['smtp_port'] ?? '465') ?>" placeholder="465">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>SMTP Crypto (Protocol)</label>
+                                                <input type="text" class="form-control" name="smtp_crypto" id="smtp_crypto" value="<?= esc($settings['email']['smtp_crypto'] ?? 'ssl') ?>" placeholder="ssl">
+                                                <small class="text-muted">Otomatis terdeteksi berdasarkan port (465=ssl, 587=tls).</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        document.getElementById('smtp_port').addEventListener('input', function() {
+                                            var port = this.value;
+                                            var cryptoInput = document.getElementById('smtp_crypto');
+                                            
+                                            if (port == 465) {
+                                                cryptoInput.value = 'ssl';
+                                            } else if (port == 587) {
+                                                cryptoInput.value = 'tls';
+                                            } else if (port == 25) {
+                                                cryptoInput.value = '';
+                                            }
+                                        });
+                                    </script>
+
                                     <a href="/admin/settings/test-email" class="btn btn-warning mt-2">Kirim Email Test</a>
                                 </div>
 

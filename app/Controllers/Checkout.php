@@ -37,29 +37,29 @@ class Checkout extends BaseController
         $db->transStart();
 
         try {
-            // 0. Settings Check
+            // 0. Cek Pengaturan
             $settingModel = new \App\Models\SettingModel();
             $bibAllowed = $settingModel->getValue('bib_config_custom_allowed') == '1';
             $bibLength = (int) ($settingModel->getValue('bib_config_length') ?? 5);
 
-            // 1. Validate & Deduct Quota
+            // 1. Validasi & Kurangi Kuota
             $categoryModel = new \App\Models\CategoryModel();
 
-            // Group cart by category to deduct in bulk if needed, or simply loop.
-            // Looping is fine for small carts.
+            // Kelompokkan keranjang berdasarkan kategori untuk pengurangan massal jika diperlukan, atau loop sederhana.
+            // Looping baik-baik saja untuk keranjang kecil.
             foreach ($cart as $item) {
-                // Atomic Update: Decrement quota WHERE id = ? AND quota > 0
-                // This prevents race conditions better than SELECT then UPDATE.
+                // Update Atomik: Kurangi kuota WHERE id = ? DAN quota > 0
+                // Ini mencegah kondisi balapan lebih baik daripada SELECT lalu UPDATE.
                 $sql = 'UPDATE categories SET quota = quota - 1 WHERE id = ? AND quota > 0';
                 $db->query($sql, [$item['category_id']]);
 
                 if ($db->affectedRows() == 0) {
-                    // Fail if no rows affected (meaning quota was 0 or ID invalid)
+                    // Gagal jika tidak ada baris yang terpengaruh (artinya kuota 0 atau ID tidak valid)
                     throw new \Exception("Tiket untuk kategori '" . $item['category_name'] . "' sudah habis terjual.");
                 }
             }
 
-            // 2. Create Order
+            // 2. Buat Pesanan
             $orderCode = 'FR' . date('Y') . '-' . strtoupper(bin2hex(random_bytes(3)));
             $orderModel = new OrderModel();
 
@@ -71,7 +71,7 @@ class Checkout extends BaseController
                 'total_amount' => array_sum(array_column($cart, 'price'))
             ]);
 
-            // 3. Create Participants
+            // 3. Buat Peserta
             $participantModel = new ParticipantModel();
             foreach ($this->request->getPost('participants') as $index => $p) {
                 $data = [
@@ -83,17 +83,17 @@ class Checkout extends BaseController
                     'jersey_size' => $p['jersey_size']
                 ];
 
-                // Handle Custom BIB
+                // Tangani Custom BIB
                 if ($bibAllowed && !empty($p['bib_number'])) {
                     $requestedBib = $p['bib_number'];
 
-                    // Validation: Length
+                    // Validasi: Panjang
                     if (strlen($requestedBib) !== $bibLength) {
                         throw new \Exception('Nomor BIB untuk peserta ' . ($index + 1) . ' harus ' . $bibLength . ' karakter.');
                     }
 
-                    // Validation: Unique
-                    // Check if exists in participants table
+                    // Validasi: Unik
+                    // Cek jika ada di tabel participants
                     $exists = $participantModel->where('bib_number', $requestedBib)->first();
                     if ($exists) {
                         throw new \Exception("Nomor BIB '" . $requestedBib . "' sudah digunakan. Silakan pilih nomor lain.");
@@ -105,7 +105,7 @@ class Checkout extends BaseController
                 $participantModel->insert($data);
             }
 
-            // 4. Get Snap Token
+            // 4. Dapatkan Snap Token
             $midtrans = new \App\Libraries\MidtransService();
             $params = [
                 'transaction_details' => [
@@ -128,18 +128,18 @@ class Checkout extends BaseController
             $db->transComplete();
 
             if ($db->transStatus() === false) {
-                // Transaction failed (should be caught by Exception, but double check)
+                // Transaksi gagal (seharusnya ditangkap oleh Exception, tapi cek ulang)
                 return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat memproses transaksi.');
             }
 
-            // Clear Cart only on success
+            // Hapus Keranjang hanya jika sukses
             session()->remove('cart');
             return redirect()->to('/payment/' . $orderCode);
         } catch (\Exception $e) {
-            // Rollback is automatic with transStart/Complete in CI4 if transStatus is false?
-            // Actually manual try-catch with transException is safer for custom errors.
-            // If we use transStart, we don't need manual rollback usually, but strict mode is better.
-            // Let's rely on transRollback manually for custom exceptions.
+            // Rollback otomatis dengan transStart/Complete di CI4 jika transStatus false?
+            // Sebenarnya try-catch manual dengan transException lebih aman untuk error kustom.
+            // Jika kita menggunakan transStart, kita biasanya tidak perlu rollback manual, tapi mode ketat lebih baik.
+            // Mari andalkan transRollback secara manual untuk pengecualian kustom.
             $db->transRollback();
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }

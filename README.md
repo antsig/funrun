@@ -83,11 +83,23 @@ Access the application at `http://localhost:8080`.
   - Payment Status Check
   - Event Countdown Timer
 - **Admin**:
-  - Dashboard (Statistics)
-  - Event Management (Events & Categories)
-  - Order Management (Verify payments, Filter by Status/Category, Generate BIB with custom formats)
-  - Social Media Management
-  - Secure Login with OTP support
+  - **Dashboard**:
+    - Real-time Statistics (Events, Orders, Participants)
+    - Revenue Tracking (Total Income Card)
+    - Visual Charts (Ticket Sales Status)
+  - **Event Management**: Create Events & Categories, Manage Quotas.
+  - **Order Management**: Verify payments, Filter by Status, BIB Generation.
+  - **Reports Module**:
+    - Orders & Participants Report.
+    - Export to Excel (.csv) & Print to PDF.
+  - **Social Media Management**: Manage links with auto-detected icons.
+  - **Settings**:
+    - General Site Settings.
+    - Email Configuration (SMTP Port, Crypto, Auto-detect).
+  - **System Tools**:
+    - Database Backup & Restore (.sql).
+    - Source Code Backup (.zip).
+  - Secure Login with OTP support.
 
 ## 📂 Project Structure
 

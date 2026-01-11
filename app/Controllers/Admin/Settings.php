@@ -80,8 +80,8 @@ class Settings extends BaseController
             'SMTPHost' => $settingModel->getValue('smtp_host'),
             'SMTPUser' => $settingModel->getValue('smtp_user'),
             'SMTPPass' => $settingModel->getValue('smtp_pass'),
-            'SMTPPort' => 587,  // Default or add to settings
-            'SMTPCrypto' => 'tls',
+            'SMTPPort' => (int) ($settingModel->getValue('smtp_port') ?? 465),
+            'SMTPCrypto' => $settingModel->getValue('smtp_crypto') ?? 'ssl',
             'mailType' => 'html',
         ];
 

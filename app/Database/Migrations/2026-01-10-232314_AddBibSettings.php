@@ -8,7 +8,7 @@ class AddBibSettings extends Migration
 {
     public function up()
     {
-        // Insert default settings
+        // Masukkan pengaturan default
         $data = [
             [
                 'key' => 'bib_config_length',
@@ -20,7 +20,7 @@ class AddBibSettings extends Migration
             ],
             [
                 'key' => 'bib_config_custom_allowed',
-                'value' => '0',  // 0 = False, 1 = True
+                'value' => '0',  // 0 = Salah, 1 = Benar
                 'group' => 'event',
                 'type' => 'boolean',
                 'created_at' => date('Y-m-d H:i:s'),

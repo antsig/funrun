@@ -97,10 +97,23 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
             $routes->post('settings/save', 'Settings::save');
             $routes->get('settings/test-email', 'Settings::testEmail');
 
+            // Reports (Protected: Administrator only)
+            $routes->get('reports', 'Reports::index');
+            $routes->get('reports/orders', 'Reports::orders');
+            $routes->get('reports/participants', 'Reports::participants');
+            $routes->get('reports/export_orders', 'Reports::export_orders');
+            $routes->get('reports/export_participants', 'Reports::export_participants');
+
             // Social Media Management
             $routes->get('settings/social-media', 'SocialMedia::index');
             $routes->post('settings/social-media/store', 'SocialMedia::store');
             $routes->get('settings/social-media/delete/(:num)', 'SocialMedia::delete/$1');
+
+            // System Tools (Backup)
+            $routes->get('backup', 'Backup::index');
+            $routes->get('backup/db-export', 'Backup::dbExport');
+            $routes->post('backup/db-restore', 'Backup::dbRestore');
+            $routes->get('backup/code-export', 'Backup::codeExport');
         });
     });
 });

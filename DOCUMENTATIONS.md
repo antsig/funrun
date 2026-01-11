@@ -201,4 +201,9 @@ Dokumen ini berfungsi sebagai catatan komprehensif tentang kemajuan pengembangan
 
 - **Library**: `Chart.js` via CDN.
 - **Controller**: `Dashboard.php` menghitung `total_revenue`.
+- **Controller**: `Dashboard.php` menghitung `total_revenue`.
 - **View**: `dashboard.php` dimodifikasi untuk menampung Canvas chart dan kartu baru.
+
+### Update Laporan
+
+- **Export Excel**: Diubah dari CSV biasa ke **Format Excel XML (.xls)** yang memiliki styling (Header tebal berwarna biru, border tabel) tanpa memerlukan library tambahan yang berat.
